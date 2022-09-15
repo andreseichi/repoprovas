@@ -1,6 +1,7 @@
 import { prisma } from "../src/database/prisma";
 import categoryFactory from "./factories/categoryFactory";
 import disciplineFactory from "./factories/disciplineFactory";
+import teacherDisciplineFactory from "./factories/teacherDisciplineFactory";
 import teacherFactory from "./factories/teacherFactory";
 import termFactory from "./factories/termFactory";
 
@@ -32,6 +33,15 @@ async function main() {
     prisma.discipline.upsert(disciplineFactory("Humildade", 1)),
     prisma.discipline.upsert(disciplineFactory("Planejamento", 2)),
     prisma.discipline.upsert(disciplineFactory("Autoconfiança", 3)),
+  ]);
+
+  await Promise.all([
+    prisma.teacherDiscipline.upsert(teacherDisciplineFactory(1, 1)),
+    prisma.teacherDiscipline.upsert(teacherDisciplineFactory(1, 2)),
+    prisma.teacherDiscipline.upsert(teacherDisciplineFactory(1, 3)),
+    prisma.teacherDiscipline.upsert(teacherDisciplineFactory(2, 4)),
+    prisma.teacherDiscipline.upsert(teacherDisciplineFactory(2, 5)),
+    prisma.teacherDiscipline.upsert(teacherDisciplineFactory(2, 6)),
   ]);
 }
 
