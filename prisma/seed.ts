@@ -1,5 +1,6 @@
 import { prisma } from "../src/database/prisma";
 import categoryFactory from "./factories/categoryFactory";
+import disciplineFactory from "./factories/disciplineFactory";
 import teacherFactory from "./factories/teacherFactory";
 import termFactory from "./factories/termFactory";
 
@@ -22,6 +23,15 @@ async function main() {
   await Promise.all([
     prisma.teacher.upsert(teacherFactory("Diego Pinho")),
     prisma.teacher.upsert(teacherFactory("Bruna Hamori")),
+  ]);
+
+  await Promise.all([
+    prisma.discipline.upsert(disciplineFactory("HTML e CSS", 1)),
+    prisma.discipline.upsert(disciplineFactory("JavaScript", 2)),
+    prisma.discipline.upsert(disciplineFactory("React", 3)),
+    prisma.discipline.upsert(disciplineFactory("Humildade", 1)),
+    prisma.discipline.upsert(disciplineFactory("Planejamento", 2)),
+    prisma.discipline.upsert(disciplineFactory("Autoconfiança", 3)),
   ]);
 }
 
