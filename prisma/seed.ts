@@ -1,4 +1,5 @@
 import { prisma } from "../src/database/prisma";
+import categoryFactory from "./factories/categoryFactory";
 import termFactory from "./factories/termFactory";
 
 async function main() {
@@ -9,6 +10,12 @@ async function main() {
     prisma.term.upsert(termFactory(4)),
     prisma.term.upsert(termFactory(5)),
     prisma.term.upsert(termFactory(6)),
+  ]);
+
+  await Promise.all([
+    prisma.category.upsert(categoryFactory("Projeto")),
+    prisma.category.upsert(categoryFactory("Prática")),
+    prisma.category.upsert(categoryFactory("Recuperação")),
   ]);
 }
 
