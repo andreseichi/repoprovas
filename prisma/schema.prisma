@@ -66,10 +66,10 @@ model TeacherDiscipline {
 
   Teacher    Teacher    @relation(fields: [teacherId], references: [id])
   Discipline Discipline @relation(fields: [disciplineId], references: [id])
+  Test       Test[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Test      Test[]
 
   @@unique([teacherId, disciplineId])
   @@map("teachers_disciplines")
