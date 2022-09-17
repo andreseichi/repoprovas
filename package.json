@@ -8,8 +8,8 @@
     "dev": "nodemon src/server.ts",
     "dev:test": "dotenv -e .env.test nodemon src/server.ts",
     "build": "tsc",
-    "test": "dotenv -e .env.test jest --watch",
-    "test:coverage": "dotenv -e .env.test jest --coverage"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
