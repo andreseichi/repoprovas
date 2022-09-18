@@ -1,6 +1,6 @@
 import { find } from "../repositories/categoryRepository";
 import { findTeacherDiscipline } from "../repositories/teacherDisciplineRepository";
-import { insert } from "../repositories/testRepository";
+import { findTestsByTeachers, insert } from "../repositories/testRepository";
 import { TestData } from "../types/tests";
 
 export async function createTestService(test: TestData) {
@@ -33,4 +33,47 @@ export async function createTestService(test: TestData) {
   const result = await insert(testInsertData);
 
   return result;
+}
+
+export async function getTestsByTeacherService() {
+  const result = await findTestsByTeachers();
+
+  if (!result) {
+    throw {
+      type: "NOT_FOUND",
+      message: "Tests not found",
+    };
+  }
+
+  const teachers = result.map((teacher) => {
+    const categories = teacher.TeacherDiscipline.map(
+      (teacherDiscipline, index) => {
+        const tests = teacherDiscipline.Test.map((test) => {
+          return {
+            id: test.id,
+            name: test.name,
+            pdfUrl: test.pdfUrl,
+            discipline: {
+              id: teacherDiscipline.Discipline.id,
+              name: teacherDiscipline.Discipline.name,
+            },
+          };
+        });
+
+        return {
+          id: teacherDiscipline.Discipline.id,
+          name: teacherDiscipline.Test[0]?.Category.name,
+          tests,
+        };
+      }
+    );
+
+    return {
+      id: teacher.id,
+      name: teacher.name,
+      categories,
+    };
+  });
+
+  return teachers;
 }
