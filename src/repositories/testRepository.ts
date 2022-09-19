@@ -9,6 +9,46 @@ export async function insert(test: TestInsertData) {
   return result;
 }
 
+export async function findTestsByDiscipline() {
+  const result = await prisma.term.findMany({
+    select: {
+      id: true,
+      number: true,
+      Discipline: {
+        select: {
+          id: true,
+          name: true,
+          TeacherDiscipline: {
+            select: {
+              Teacher: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              Test: {
+                select: {
+                  id: true,
+                  name: true,
+                  pdfUrl: true,
+                  Category: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+}
+
 export async function findTestsByTeachers() {
   const result = await prisma.teacher
     .findMany({
@@ -30,6 +70,7 @@ export async function findTestsByTeachers() {
                 pdfUrl: true,
                 Category: {
                   select: {
+                    id: true,
                     name: true,
                   },
                 },

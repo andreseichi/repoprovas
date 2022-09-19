@@ -1,6 +1,10 @@
 import { find } from "../repositories/categoryRepository";
 import { findTeacherDiscipline } from "../repositories/teacherDisciplineRepository";
-import { findTestsByTeachers, insert } from "../repositories/testRepository";
+import {
+  findTestsByDiscipline,
+  findTestsByTeachers,
+  insert,
+} from "../repositories/testRepository";
 import { TestData } from "../types/tests";
 
 export async function createTestService(test: TestData) {
@@ -35,6 +39,54 @@ export async function createTestService(test: TestData) {
   return result;
 }
 
+export async function getTestsByDisciplineService() {
+  const result = await findTestsByDiscipline();
+  if (!result) {
+    throw {
+      type: "NOT_FOUND",
+      message: "Tests not found",
+    };
+  }
+
+  const testsFiltered = result.map((term) => {
+    const disciplines = term.Discipline.map((discipline) => {
+      const categories = discipline.TeacherDiscipline.map((category, index) => {
+        const tests = category.Test.map((test) => {
+          return {
+            id: test.id,
+            name: test.name,
+            pdfUrl: test.pdfUrl,
+            category: {
+              id: test.Category.id,
+              name: test.Category.name,
+            },
+          };
+        });
+
+        return {
+          id: tests[index]?.category.id,
+          name: tests[index]?.category.name,
+          tests,
+        };
+      });
+
+      return {
+        id: discipline.id,
+        name: discipline.name,
+        categories,
+      };
+    });
+
+    return {
+      id: term.id,
+      number: term.number,
+      disciplines,
+    };
+  });
+
+  return testsFiltered;
+}
+
 export async function getTestsByTeacherService() {
   const result = await findTestsByTeachers();
 
@@ -61,8 +113,8 @@ export async function getTestsByTeacherService() {
         });
 
         return {
-          id: teacherDiscipline.Discipline.id,
-          name: teacherDiscipline.Test[0]?.Category.name,
+          id: teacherDiscipline.Test[index]?.Category.id,
+          name: teacherDiscipline.Test[index]?.Category.name,
           tests,
         };
       }
